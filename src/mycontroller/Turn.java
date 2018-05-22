@@ -104,64 +104,16 @@ public class Turn {
 	/**
 	 * Turn the car counter clock wise (think of a compass going counter clock-wise)
 	 */
-	public void applyLeftTurn(WorldSpatial.Direction orientation, float delta) {
-		switch(orientation){
-		case EAST:
-			if(!car.getOrientation().equals(WorldSpatial.Direction.NORTH)){
-				car.turnLeft(delta);
-			}
-			break;
-		case NORTH:
-			if(!car.getOrientation().equals(WorldSpatial.Direction.WEST)){
-				car.turnLeft(delta);
-			}
-			break;
-		case SOUTH:
-			if(!car.getOrientation().equals(WorldSpatial.Direction.EAST)){
-				car.turnLeft(delta);
-			}
-			break;
-		case WEST:
-			if(!car.getOrientation().equals(WorldSpatial.Direction.SOUTH)){
-				car.turnLeft(delta);
-			}
-			break;
-		default:
-			break;
-		
-		}
+	public void applyLeftTurn(float delta) {
+		car.turnLeft(delta);
 		
 	}
 	
 	/**
 	 * Turn the car clock wise (think of a compass going clock-wise)
 	 */
-	public void applyRightTurn(WorldSpatial.Direction orientation, float delta) {
-		switch(orientation){
-		case EAST:
-			if(!car.getOrientation().equals(WorldSpatial.Direction.SOUTH)){
-				car.turnRight(delta);
-			}
-			break;
-		case NORTH:
-			if(!car.getOrientation().equals(WorldSpatial.Direction.EAST)){
-				car.turnRight(delta);
-			}
-			break;
-		case SOUTH:
-			if(!car.getOrientation().equals(WorldSpatial.Direction.WEST)){
-				car.turnRight(delta);
-			}
-			break;
-		case WEST:
-			if(!car.getOrientation().equals(WorldSpatial.Direction.NORTH)){
-				car.turnRight(delta);
-			}
-			break;
-		default:
-			break;
-		
-		}
+	public void applyRightTurn(float delta) {
+		car.turnRight(delta);
 		
 	}
 

@@ -25,13 +25,14 @@ public class FollowWall implements Route {
 	
 	
 	private Turn turn;
-	private CheckTiles checkWall;
+	private CheckTiles checkTiles;
 	private Car car;
+	boolean reverse = false;
 	
 	public FollowWall(Turn turn, Car car, CheckTiles checkWall){
 		this.turn = turn;
 		this.car = car;
-		this.checkWall = checkWall;
+		this.checkTiles = checkWall;
 		
 	}
 	
@@ -47,11 +48,11 @@ public class FollowWall implements Route {
 				car.applyForwardAcceleration();
 			}
 			
-			if(checkWall.checkNorth(currentView, MapTile.Type.WALL) != null){  //only checks north wall
+			if(checkTiles.checkNorth(currentView,MapTile.Type.WALL)){  //only checks north wall
 				// Turn right until we go back to east!
 				if(!car.getOrientation().equals(WorldSpatial.Direction.EAST)){ // turn right when wall north
 					lastTurnDirection = WorldSpatial.RelativeDirection.RIGHT;
-					turn.applyRightTurn(car.getOrientation(),delta);
+					turn.applyRightTurn(delta);
 				}
 				else{ //fully turned right follow wall
 					isFollowingWall = true;
@@ -59,34 +60,39 @@ public class FollowWall implements Route {
 			}
 			else if(!car.getOrientation().equals(WorldSpatial.Direction.NORTH)){ // Turn towards the north if no wall north
 				lastTurnDirection = WorldSpatial.RelativeDirection.LEFT;
-				turn.applyLeftTurn(car.getOrientation(),delta);
+				turn.applyLeftTurn(delta);
 			}
 		}
 		// Once the car is already stuck to a wall, apply the following logic
 		else{
+			System.out.print("1. ");
 			// Readjust the car if it is misaligned.
 			turn.readjust(lastTurnDirection,delta, isTurningLeft,isTurningRight);
 			
 			if(isTurningRight){
-				turn.applyRightTurn(car.getOrientation(),delta);
+				if(!checkTiles.checkSide(currentView, MapTile.Type.TRAP, car.getOrientation(), "right")){ //not turning into traps
+					turn.applyRightTurn(delta);
+				}
 			}
 			else if(isTurningLeft){ 
 				// Apply the left turn if you are not currently near a wall.
-				if(checkWall.checkTileAround(car.getOrientation(),currentView, MapTile.Type.WALL)== null){
-					turn.applyLeftTurn(car.getOrientation(),delta);
+				if(!checkTiles.checkFollowingWall(car.getOrientation(),currentView,MapTile.Type.WALL)){
+					if(!checkTiles.checkSide(currentView, MapTile.Type.TRAP, car.getOrientation(), "left")){ //not turning into traps
+						turn.applyLeftTurn(delta);
+					}
 				}
 				else{
 					isTurningLeft = false;
 				}
 			}
 			// Try to determine whether or not the car is next to a wall.
-			if(checkWall.checkTileAround(car.getOrientation(),currentView, MapTile.Type.WALL)!= null){
+			else if(checkTiles.checkFollowingWall(car.getOrientation(),currentView,MapTile.Type.WALL)){
 				// Maintain some velocity
 				if(car.getSpeed() < CAR_SPEED){
 					car.applyForwardAcceleration();
 				}
 				// If there is wall ahead, turn right!
-				if(checkWall.checkTileAround(car.getOrientation(),currentView, MapTile.Type.WALL)!= null){
+				if(checkTiles.checkWallAhead(car.getOrientation(),currentView,MapTile.Type.WALL) ){
 					lastTurnDirection = WorldSpatial.RelativeDirection.RIGHT;
 					isTurningRight = true;				
 					
@@ -95,9 +101,25 @@ public class FollowWall implements Route {
 			}
 			// This indicates that I can do a left turn if I am not turning right
 			else{
+				System.out.println("here ");
 				lastTurnDirection = WorldSpatial.RelativeDirection.LEFT;
 				isTurningLeft = true;
 			}
+			if(checkTiles.checkSide(currentView, MapTile.Type.TRAP, car.getOrientation(), "right") || checkTiles.checkSide(currentView, MapTile.Type.WALL, car.getOrientation(), "right")){ // come to deadend
+				if(checkTiles.checkSide(currentView, MapTile.Type.TRAP, car.getOrientation(), "left") || checkTiles.checkSide(currentView, MapTile.Type.WALL, car.getOrientation(), "left")) {
+					if(checkTiles.checkWallAhead(car.getOrientation(),currentView,MapTile.Type.WALL) || checkTiles.checkWallAhead(car.getOrientation(),currentView,MapTile.Type.TRAP) ) {
+						car.applyReverseAcceleration();
+						reverse = true;
+					}
+				}
+				
+			}
+		if(reverse && !checkTiles.checkSide(currentView, MapTile.Type.WALL, car.getOrientation(), "left") ) {
+			if(car.getSpeed() < CAR_SPEED){
+				car.applyForwardAcceleration();
+			}
+			car.turnLeft(delta);
+		}
 		}
 	}
 	
@@ -105,7 +127,7 @@ public class FollowWall implements Route {
 	 * Checks whether the car's state has changed or not, stops turning if it
 	 *  already has.
 	 */
-	public void checkStateChange(Car car) { //keep in controller
+	private void checkStateChange(Car car) { //keep in controller
 		if(previousState == null){
 			previousState = car.getOrientation();
 		}
@@ -121,4 +143,8 @@ public class FollowWall implements Route {
 			}
 		}
 	}
+	
+	
+	
+	
 }
