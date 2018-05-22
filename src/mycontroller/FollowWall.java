@@ -47,7 +47,7 @@ public class FollowWall implements Route {
 				car.applyForwardAcceleration();
 			}
 			
-			if(checkWall.checkNorth(currentView)){  //only checks north wall
+			if(checkWall.checkNorth(currentView, MapTile.Type.WALL) != null){  //only checks north wall
 				// Turn right until we go back to east!
 				if(!car.getOrientation().equals(WorldSpatial.Direction.EAST)){ // turn right when wall north
 					lastTurnDirection = WorldSpatial.RelativeDirection.RIGHT;
@@ -72,7 +72,7 @@ public class FollowWall implements Route {
 			}
 			else if(isTurningLeft){ 
 				// Apply the left turn if you are not currently near a wall.
-				if(!checkWall.checkFollowingWall(car.getOrientation(),currentView)){
+				if(checkWall.checkTileAround(car.getOrientation(),currentView, MapTile.Type.WALL)== null){
 					turn.applyLeftTurn(car.getOrientation(),delta);
 				}
 				else{
@@ -80,13 +80,13 @@ public class FollowWall implements Route {
 				}
 			}
 			// Try to determine whether or not the car is next to a wall.
-			else if(checkWall.checkFollowingWall(car.getOrientation(),currentView)){
+			if(checkWall.checkTileAround(car.getOrientation(),currentView, MapTile.Type.WALL)!= null){
 				// Maintain some velocity
 				if(car.getSpeed() < CAR_SPEED){
 					car.applyForwardAcceleration();
 				}
 				// If there is wall ahead, turn right!
-				if(checkWall.checkWallAhead(car.getOrientation(),currentView)){
+				if(checkWall.checkTileAround(car.getOrientation(),currentView, MapTile.Type.WALL)!= null){
 					lastTurnDirection = WorldSpatial.RelativeDirection.RIGHT;
 					isTurningRight = true;				
 					
