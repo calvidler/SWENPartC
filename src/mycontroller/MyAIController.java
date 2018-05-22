@@ -12,7 +12,7 @@ public class MyAIController extends CarController{
 	private boolean isTurningRight = false; 
 	private Car car;
 	private Turn turn;
-	private CheckWalls checkWall;
+	private CheckTiles checkWall;
 	private FollowWall followWall;
 	
 	
@@ -20,7 +20,7 @@ public class MyAIController extends CarController{
 	public MyAIController(Car car) {
 		super(car);
 		this.turn = new Turn(isTurningLeft, isTurningRight, car);
-		this.checkWall = new CheckWalls(car);
+		this.checkWall = new CheckTiles(car);
 		this.car = car;
 		
 		followWall = new FollowWall(turn, car, checkWall); // does not adapt well if used with others 

@@ -25,10 +25,10 @@ public class FollowWall implements Route {
 	
 	
 	private Turn turn;
-	private CheckWalls checkWall;
+	private CheckTiles checkWall;
 	private Car car;
 	
-	public FollowWall(Turn turn, Car car, CheckWalls checkWall){
+	public FollowWall(Turn turn, Car car, CheckTiles checkWall){
 		this.turn = turn;
 		this.car = car;
 		this.checkWall = checkWall;
