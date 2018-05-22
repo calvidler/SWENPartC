@@ -2,6 +2,7 @@ package mycontroller;
 
 import java.util.HashMap;
 
+import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
@@ -13,6 +14,7 @@ public class CheckTiles {
 	// How many minimum units the wall is away from the player.
 	private int wallSensitivity = 2;
 	private int LavaSensitivity = 1;
+	private int key =3;
 	
 	public CheckTiles(Car car) {
 		this.car = car;
@@ -62,6 +64,24 @@ public class CheckTiles {
 			return false;
 		}
 		
+	}
+	public String checkDiagonal(HashMap<Coordinate, MapTile> currentView,WorldSpatial.Direction orientation) {
+		switch(orientation){
+		case NORTH:
+			if(checkNorthEast(currentView)) return "right";
+			else if(checkNorthWest(currentView)) return "left";
+		case EAST:
+			if(checkNorthEast(currentView)) return "left";
+			else if(checkSouthEast(currentView)) return "right";
+		case SOUTH:
+			if(checkSouthEast(currentView)) return "left";
+			else if(checkSouthWest(currentView)) return "right";
+		case WEST:
+			if(checkNorthWest(currentView)) return "left";
+			else if(checkSouthWest(currentView)) return "right";
+		default:
+			return null;
+		}
 	}
 	
 	public boolean checkSide(HashMap<Coordinate, MapTile> currentView, MapTile.Type type,WorldSpatial.Direction orientation, String turning) {
@@ -138,5 +158,69 @@ public class CheckTiles {
 			}
 		}
 		return false;
+	}
+	
+	
+	public boolean checkNorthEast(HashMap<Coordinate,MapTile> currentView){
+		// Check tiles towards the bottom
+				Coordinate currentPosition = new Coordinate(car.getPosition());
+				for(int i = 0; i <= wallSensitivity; i++){
+					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+i));
+					if(tile instanceof LavaTrap){
+						if(((LavaTrap) tile).getKey() == key) {
+							key--;
+							return true;
+						}
+					}
+				}
+				return false;
+		
+	}
+	public boolean checkNorthWest(HashMap<Coordinate,MapTile> currentView){
+		// Check tiles towards the bottom
+				Coordinate currentPosition = new Coordinate(car.getPosition());
+				for(int i = 0; i <= wallSensitivity; i++){
+					MapTile tile = currentView.get(new Coordinate(currentPosition.x-i, currentPosition.y+i));
+					if(tile instanceof LavaTrap){
+						if(((LavaTrap) tile).getKey() == key) {
+							key--;
+							return true;
+						}
+					}
+				}
+				return false;
+		
+	}
+	
+	public boolean checkSouthEast(HashMap<Coordinate,MapTile> currentView){
+		// Check tiles towards the bottom
+				Coordinate currentPosition = new Coordinate(car.getPosition());
+				for(int i = 0; i <= wallSensitivity; i++){
+					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y-i));
+					if(tile instanceof LavaTrap){
+						if(((LavaTrap) tile).getKey() == key) {
+							key--;
+							return true;
+						}
+					}
+				}
+				return false;
+		
+	}
+	
+	public boolean checkSouthWest(HashMap<Coordinate,MapTile> currentView){
+		// Check tiles towards the bottom
+		Coordinate currentPosition = new Coordinate(car.getPosition());
+		for(int i = 0; i <= wallSensitivity; i++){
+			MapTile tile = currentView.get(new Coordinate(currentPosition.x-i, currentPosition.y-i));
+			if(tile instanceof LavaTrap){
+				if(((LavaTrap) tile).getKey() == key) {
+					key--;
+					return true;
+				}
+			}
+		}
+		return false;
+		
 	}
 }

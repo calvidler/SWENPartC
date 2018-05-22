@@ -65,7 +65,6 @@ public class FollowWall implements Route {
 		}
 		// Once the car is already stuck to a wall, apply the following logic
 		else{
-			System.out.print("1. ");
 			// Readjust the car if it is misaligned.
 			turn.readjust(lastTurnDirection,delta, isTurningLeft,isTurningRight);
 			
@@ -102,7 +101,6 @@ public class FollowWall implements Route {
 			}
 			// This indicates that I can do a left turn if I am not turning right
 			else{
-				System.out.println("here ");
 				lastTurnDirection = WorldSpatial.RelativeDirection.LEFT;
 				isTurningLeft = true;
 			}
@@ -115,13 +113,22 @@ public class FollowWall implements Route {
 				}
 				
 			}
-		if(reverse && !checkTiles.checkFollowingWall(car.getOrientation(),currentView,MapTile.Type.WALL) ) {
-			if(car.getSpeed() < CAR_SPEED){
-				car.applyForwardAcceleration();
+			if(reverse && !checkTiles.checkFollowingWall(car.getOrientation(),currentView,MapTile.Type.WALL) ) { // reversing if come to a deadend
+				if(car.getSpeed() < CAR_SPEED){
+					car.applyForwardAcceleration();
+				}
+				car.turnLeft(delta);
 			}
-			System.out.println("here");
-			car.turnLeft(delta);
-		}
+			String key = checkTiles.checkDiagonal(currentView, car.getOrientation()); //checking to key in any diagonal
+			if(key != null) {
+				System.out.println("found! ");
+				switch(key) {
+					case "left":
+						car.turnLeft(delta);
+					case "right":
+						car.turnRight(delta);
+				}
+			}
 		}
 	}
 	
