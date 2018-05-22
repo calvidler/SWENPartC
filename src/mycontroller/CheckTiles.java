@@ -2,6 +2,7 @@ package mycontroller;
 
 import java.util.HashMap;
 
+import tiles.HealthTrap;
 import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
@@ -13,7 +14,7 @@ public class CheckTiles {
 	private Car car;
 	// How many minimum units the wall is away from the player.
 	private int wallSensitivity = 2;
-	private int LavaSensitivity = 1;
+	private int lavaSensitivity = 4;
 	private int key =3;
 	
 	public CheckTiles(Car car) {
@@ -117,7 +118,7 @@ public class CheckTiles {
 		Coordinate currentPosition = new Coordinate(car.getPosition());
 		for(int i = 0; i <= wallSensitivity; i++){
 			MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
-			if(tile.isType(type) || tile.isType(MapTile.Type.TRAP)){
+			if((tile.isType(type) || tile instanceof LavaTrap) && !(tile instanceof HealthTrap)){
 				return true;
 			}
 		}
@@ -129,7 +130,7 @@ public class CheckTiles {
 		Coordinate currentPosition = new Coordinate(car.getPosition());
 		for(int i = 0; i <= wallSensitivity; i++){
 			MapTile tile = currentView.get(new Coordinate(currentPosition.x-i, currentPosition.y));
-			if(tile.isType(type) || tile.isType(MapTile.Type.TRAP)){
+			if((tile.isType(type) || tile instanceof LavaTrap) && !(tile instanceof HealthTrap)){
 				return true;
 			}
 		}
@@ -141,7 +142,7 @@ public class CheckTiles {
 		Coordinate currentPosition = new Coordinate(car.getPosition());
 		for(int i = 0; i <= wallSensitivity; i++){
 			MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+i));
-			if(tile.isType(type) || tile.isType(MapTile.Type.TRAP)){
+			if((tile.isType(type) || tile instanceof LavaTrap) && !(tile instanceof HealthTrap)){
 				return true;
 			}
 		}
@@ -153,7 +154,7 @@ public class CheckTiles {
 		Coordinate currentPosition = new Coordinate(car.getPosition());
 		for(int i = 0; i <= wallSensitivity; i++){
 			MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y-i));
-			if(tile.isType(type) || tile.isType(MapTile.Type.TRAP)){
+			if((tile.isType(type) || tile instanceof LavaTrap) && !(tile instanceof HealthTrap)){
 				return true;
 			}
 		}
@@ -164,7 +165,7 @@ public class CheckTiles {
 	public boolean checkNorthEast(HashMap<Coordinate,MapTile> currentView){
 		// Check tiles towards the bottom
 				Coordinate currentPosition = new Coordinate(car.getPosition());
-				for(int i = 0; i <= wallSensitivity; i++){
+				for(int i = 0; i <= lavaSensitivity; i++){
 					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y+i));
 					if(tile instanceof LavaTrap){
 						if(((LavaTrap) tile).getKey() == key) {
@@ -179,7 +180,7 @@ public class CheckTiles {
 	public boolean checkNorthWest(HashMap<Coordinate,MapTile> currentView){
 		// Check tiles towards the bottom
 				Coordinate currentPosition = new Coordinate(car.getPosition());
-				for(int i = 0; i <= wallSensitivity; i++){
+				for(int i = 0; i <= lavaSensitivity; i++){
 					MapTile tile = currentView.get(new Coordinate(currentPosition.x-i, currentPosition.y+i));
 					if(tile instanceof LavaTrap){
 						if(((LavaTrap) tile).getKey() == key) {
@@ -195,7 +196,7 @@ public class CheckTiles {
 	public boolean checkSouthEast(HashMap<Coordinate,MapTile> currentView){
 		// Check tiles towards the bottom
 				Coordinate currentPosition = new Coordinate(car.getPosition());
-				for(int i = 0; i <= wallSensitivity; i++){
+				for(int i = 0; i <= lavaSensitivity; i++){
 					MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y-i));
 					if(tile instanceof LavaTrap){
 						if(((LavaTrap) tile).getKey() == key) {
@@ -211,7 +212,7 @@ public class CheckTiles {
 	public boolean checkSouthWest(HashMap<Coordinate,MapTile> currentView){
 		// Check tiles towards the bottom
 		Coordinate currentPosition = new Coordinate(car.getPosition());
-		for(int i = 0; i <= wallSensitivity; i++){
+		for(int i = 0; i <= lavaSensitivity; i++){
 			MapTile tile = currentView.get(new Coordinate(currentPosition.x-i, currentPosition.y-i));
 			if(tile instanceof LavaTrap){
 				if(((LavaTrap) tile).getKey() == key) {
