@@ -87,6 +87,7 @@ public class FollowWall implements Route {
 			}
 			// Try to determine whether or not the car is next to a wall.
 			else if(checkTiles.checkFollowingWall(car.getOrientation(),currentView,MapTile.Type.WALL)){
+				reverse = false;
 				// Maintain some velocity
 				if(car.getSpeed() < CAR_SPEED){
 					car.applyForwardAcceleration();
@@ -114,10 +115,11 @@ public class FollowWall implements Route {
 				}
 				
 			}
-		if(reverse && !checkTiles.checkSide(currentView, MapTile.Type.WALL, car.getOrientation(), "left") ) {
+		if(reverse && !checkTiles.checkFollowingWall(car.getOrientation(),currentView,MapTile.Type.WALL) ) {
 			if(car.getSpeed() < CAR_SPEED){
 				car.applyForwardAcceleration();
 			}
+			System.out.println("here");
 			car.turnLeft(delta);
 		}
 		}
