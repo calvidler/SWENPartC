@@ -63,6 +63,7 @@ public class HealthStrategy implements Route {
 				count++;
 				if(count > 12) {
 					lastTurnDirection = null;
+					isFollowingWall = false;
 					lavaCrossed = false;
 					System.out.println("left " + lastTurnDirection + " ");
 					count =0;

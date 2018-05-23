@@ -61,7 +61,7 @@ public class FollowWall implements Route {
 				hasRounded = true;
 				count++;
 				System.out.println(count);
-				if(count > 30  && checkTiles.checkFollowingWall(car.getOrientation(),currentView,MapTile.Type.WALL,false)) {
+				if(count > 45  && checkTiles.checkFollowingWall(car.getOrientation(),currentView,MapTile.Type.WALL,false) && !isTurningRight ) {
 					System.out.println("count = " + count + " ");
 					hasRounded = false;
 					count = 0;
