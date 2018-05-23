@@ -105,6 +105,10 @@ public class Turn {
 	 * Turn the car counter clock wise (think of a compass going counter clock-wise)
 	 */
 	public void applyLeftTurn(float delta) {
+		if(car.getSpeed() < 1) {
+			car.applyForwardAcceleration();
+			
+		}
 		car.turnLeft(delta);
 		
 	}
@@ -113,6 +117,10 @@ public class Turn {
 	 * Turn the car clock wise (think of a compass going clock-wise)
 	 */
 	public void applyRightTurn(float delta) {
+		if(car.getSpeed() < 1) {
+			car.applyForwardAcceleration();
+			
+		}
 		car.turnRight(delta);
 		
 	}

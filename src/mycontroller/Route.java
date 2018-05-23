@@ -2,5 +2,5 @@ package mycontroller;
 
 
 public interface Route {
-	public void run(float delta);
+	public boolean run(float delta);
 }

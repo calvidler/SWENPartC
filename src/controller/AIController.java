@@ -2,6 +2,7 @@ package controller;
 
 import java.util.HashMap;
 
+import tiles.HealthTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
@@ -84,8 +85,8 @@ public class AIController extends CarController {
 			}
 			// Try to determine whether or not the car is next to a wall.
 			else if(checkFollowingWall(getOrientation(),currentView)){
-				System.out.print("following wall: ");
 				// Maintain some velocity
+				
 				if(getSpeed() < CAR_SPEED){
 					applyForwardAcceleration();
 				}
@@ -107,6 +108,8 @@ public class AIController extends CarController {
 		
 
 	}
+	
+	
 	
 	/**
 	 * Readjust the car to the orientation we are in.

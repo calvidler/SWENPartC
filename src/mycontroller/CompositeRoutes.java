@@ -9,10 +9,11 @@ public class CompositeRoutes {
     private List<Route> routeTypes = new ArrayList<Route>();
 
     //Runs algorithms
-    public void run(float delta) {
+    public boolean run(float delta) {
 		for (Route route : routeTypes) {
-            route.run(delta);
+            return route.run(delta);
         }
+		return false;
     }
 
     //Adds routes to list.

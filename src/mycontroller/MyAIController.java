@@ -3,6 +3,7 @@ package mycontroller;
 
 import controller.CarController;
 import world.Car;
+import controller.AIController;
 
 
 public class MyAIController extends CarController{
@@ -14,6 +15,10 @@ public class MyAIController extends CarController{
 	private Turn turn;
 	private CheckTiles checkTile;
 	private FollowWall followWall;
+	private HealthStrategy healthStrategy;
+	
+	
+	private int check = 0;
 	
 	
 		
@@ -24,6 +29,8 @@ public class MyAIController extends CarController{
 		this.car = car;
 		
 		followWall = new FollowWall(turn, car, checkTile); // does not adapt well if used with others 
+		this.healthStrategy = new HealthStrategy(turn, car, checkTile);
+		
 		
 		
 	}
@@ -32,10 +39,24 @@ public class MyAIController extends CarController{
 	public void update(float delta) {
 		
 		CompositeRoutes compositeRoutes = new CompositeRoutes();
-		compositeRoutes.add(followWall);
+		if(check%2 != 0) { 
+			System.out.print("2. ");
+			compositeRoutes.remove(followWall);
+			compositeRoutes.add(healthStrategy);
+		}
+		else {
+			System.out.print("1. ");
+			compositeRoutes.remove(healthStrategy);
+			compositeRoutes.add(followWall);
+		}
+		if(compositeRoutes.run(delta)) {
+			System.out.println("Yay");
+			check++;
+		}
 		
 		
-		compositeRoutes.run(delta);
+		
+		
 		
 		
 		

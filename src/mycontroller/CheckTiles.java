@@ -14,11 +14,13 @@ public class CheckTiles {
 	private Car car;
 	// How many minimum units the wall is away from the player.
 	private int wallSensitivity = 2;
-	private int lavaSensitivity = 4;
-	private int key =3;
+	private int lavaSensitivity;
+	private int key =4;
+	private float speed;
 	
 	public CheckTiles(Car car) {
 		this.car = car;
+		this.lavaSensitivity = car.VIEW_SQUARE;
 		
 	}
 
@@ -28,16 +30,18 @@ public class CheckTiles {
 	 * @param currentView what the car can currently see
 	 * @return
 	 */
-	public boolean checkWallAhead(WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile> currentView, MapTile.Type type ){
+	public boolean checkWallAhead(WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile> currentView, MapTile.Type type , boolean enterLava){
+		/*if(car.getSpeed() < 1) wallSensitivity = 1;
+		else wallSensitivity = 2;*/
 		switch(orientation){
 		case EAST:
-			return checkEast(currentView, type);
+			return checkEast(currentView, type, enterLava);
 		case NORTH:
-			return checkNorth(currentView, type);
+			return checkNorth(currentView, type, enterLava);
 		case SOUTH:
-			return checkSouth(currentView, type);
+			return checkSouth(currentView, type, enterLava);
 		case WEST:
-			return checkWest(currentView, type);
+			return checkWest(currentView, type, enterLava);
 		default:
 			return false;
 		
@@ -50,17 +54,17 @@ public class CheckTiles {
 	 * @param currentView
 	 * @return
 	 */
-	public boolean checkFollowingWall(WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile> currentView, MapTile.Type type) {
+	public boolean checkFollowingWall(WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile> currentView, MapTile.Type type, boolean enterLava) {
 		
 		switch(orientation){
 		case EAST:
-			return checkNorth(currentView, type);
+			return checkNorth(currentView, type, enterLava);
 		case NORTH:
-			return checkWest(currentView, type);
+			return checkWest(currentView, type, enterLava);
 		case SOUTH:
-			return checkEast(currentView, type);
+			return checkEast(currentView, type, enterLava);
 		case WEST:
-			return checkSouth(currentView, type);
+			return checkSouth(currentView, type, enterLava);
 		default:
 			return false;
 		}
@@ -85,20 +89,20 @@ public class CheckTiles {
 		}
 	}
 	
-	public boolean checkSide(HashMap<Coordinate, MapTile> currentView, MapTile.Type type,WorldSpatial.Direction orientation, String turning) {
+	public boolean checkSide(HashMap<Coordinate, MapTile> currentView, MapTile.Type type,WorldSpatial.Direction orientation, String turning , boolean enterLava) {
 		switch(orientation){
 		case NORTH:
-			if(turning.equals("left")) return checkWest(currentView, type);
-			else return checkEast(currentView, type);
+			if(turning.equals("left")) return checkWest(currentView, type, enterLava);
+			else return checkEast(currentView, type, enterLava);
 		case EAST:
-			if(turning.equals("left")) return checkNorth(currentView, type);
-			else return checkSouth(currentView, type);
+			if(turning.equals("left")) return checkNorth(currentView, type, enterLava);
+			else return checkSouth(currentView, type, enterLava);
 		case SOUTH:
-			if(turning.equals("left")) return checkEast(currentView, type);
-			else return checkWest(currentView, type);
+			if(turning.equals("left")) return checkEast(currentView, type, enterLava);
+			else return checkWest(currentView, type, enterLava);
 		case WEST:
-			if(turning.equals("left")) return checkSouth(currentView, type);
-			else return checkNorth(currentView, type);
+			if(turning.equals("left")) return checkSouth(currentView, type, enterLava);
+			else return checkNorth(currentView, type, enterLava);
 		default:
 			return false;
 		}
@@ -113,48 +117,48 @@ public class CheckTiles {
 	 * checkNorth will check up to wallSensitivity amount of tiles to the top.
 	 * checkSouth will check up to wallSensitivity amount of tiles below.
 	 */
-	public boolean checkEast(HashMap<Coordinate, MapTile> currentView, MapTile.Type type){
+	public boolean checkEast(HashMap<Coordinate, MapTile> currentView, MapTile.Type type, boolean enterLava){
 		// Check tiles to my right
 		Coordinate currentPosition = new Coordinate(car.getPosition());
 		for(int i = 0; i <= wallSensitivity; i++){
 			MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
-			if((tile.isType(type) || tile instanceof LavaTrap) && !(tile instanceof HealthTrap)){
+			if((tile.isType(type) || tile instanceof LavaTrap && enterLava == false) && !(tile instanceof HealthTrap)){
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public boolean checkWest(HashMap<Coordinate,MapTile> currentView, MapTile.Type type){
+	public boolean checkWest(HashMap<Coordinate,MapTile> currentView, MapTile.Type type, boolean enterLava){
 		// Check tiles to my left
 		Coordinate currentPosition = new Coordinate(car.getPosition());
 		for(int i = 0; i <= wallSensitivity; i++){
 			MapTile tile = currentView.get(new Coordinate(currentPosition.x-i, currentPosition.y));
-			if((tile.isType(type) || tile instanceof LavaTrap) && !(tile instanceof HealthTrap)){
+			if((tile.isType(type) || tile instanceof LavaTrap && enterLava == false) && !(tile instanceof HealthTrap)){
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public boolean checkNorth(HashMap<Coordinate,MapTile> currentView, MapTile.Type type){
+	public boolean checkNorth(HashMap<Coordinate,MapTile> currentView, MapTile.Type type, boolean enterLava){
 		// Check tiles to towards the top
 		Coordinate currentPosition = new Coordinate(car.getPosition());
 		for(int i = 0; i <= wallSensitivity; i++){
 			MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+i));
-			if((tile.isType(type) || tile instanceof LavaTrap) && !(tile instanceof HealthTrap)){
+			if((tile.isType(type) || tile instanceof LavaTrap && enterLava == false) && !(tile instanceof HealthTrap)){
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public boolean checkSouth(HashMap<Coordinate,MapTile> currentView, MapTile.Type type){
+	public boolean checkSouth(HashMap<Coordinate,MapTile> currentView, MapTile.Type type, boolean enterLava){
 		// Check tiles towards the bottom
 		Coordinate currentPosition = new Coordinate(car.getPosition());
 		for(int i = 0; i <= wallSensitivity; i++){
 			MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y-i));
-			if((tile.isType(type) || tile instanceof LavaTrap) && !(tile instanceof HealthTrap)){
+			if((tile.isType(type) || tile instanceof LavaTrap && enterLava == false) && !(tile instanceof HealthTrap)){
 				return true;
 			}
 		}
