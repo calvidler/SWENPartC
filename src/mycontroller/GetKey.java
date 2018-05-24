@@ -49,14 +49,6 @@ public class GetKey {
 		int currentX = Integer.parseInt(splitCoordinate[0]);
 		int currentY = Integer.parseInt(splitCoordinate[1]);
 		WorldSpatial.Direction orientation=  car.getOrientation();		
-		
-		if(car.getSpeed() > 2) { //go slow
-			car.applyReverseAcceleration();
-		}
-		else if(car.getSpeed() < -2) {
-			car.applyForwardAcceleration();
-			
-		}
 		// Readjust the car if it is misaligned.
 		turn.readjust(lastTurnDirection,delta, isTurningLeft,isTurningRight);
 		

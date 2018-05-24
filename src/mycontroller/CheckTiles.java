@@ -15,13 +15,12 @@ public class CheckTiles {
 	// How many minimum units the wall is away from the player.
 	private int wallSensitivity = 2;
 	private int lavaSensitivity;
-	private int key =3;
+	private int key;
 	
 	public CheckTiles(Car car) {
 		this.car = car;
 		//this.lavaSensitivity = car.VIEW_SQUARE;
 		lavaSensitivity = 3;
-		this.key = car.getKey() -1;
 	}
 
 	/**
@@ -93,6 +92,7 @@ public class CheckTiles {
 		
 	}
 	public Coordinate checkDiagonal(HashMap<Coordinate, MapTile> currentView,WorldSpatial.Direction orientation) {
+		this.key = car.getKey() -1;
 		Coordinate coordinateTemp;
 		switch(orientation){
 		case NORTH:

@@ -12,11 +12,13 @@ public class MyAIController extends CarController{
 	private boolean isTurningRight = false; 
 	private Turn turn;
 	private CheckTiles checkTile;
-	private FollowWall followWall;
-	private HealthStrategy healthStrategy;
+	private SafeSearch safeSearch;
+	private BruteSearch bruteSearch;
 	
 	
-	private int check = 0;
+	private int check = 1;
+	
+	private Car car;
 	
 	
 		
@@ -24,9 +26,11 @@ public class MyAIController extends CarController{
 		super(car);
 		this.turn = new Turn(isTurningLeft, isTurningRight, car);
 		this.checkTile = new CheckTiles(car);
+		this.car = car;
 		
-		followWall = new FollowWall(turn, car, checkTile); // does not adapt well if used with others 
-		this.healthStrategy = new HealthStrategy(turn, car, checkTile);
+		this.safeSearch = new SafeSearch(turn, car, checkTile); // does not adapt well if used with others 
+		this.bruteSearch = new BruteSearch(turn, car, checkTile);
+		
 		
 		
 		
@@ -34,15 +38,16 @@ public class MyAIController extends CarController{
 
 	@Override
 	public void update(float delta) {
-		
 		CompositeRoutes compositeRoutes = new CompositeRoutes();
 		if(check%2 != 0) { 
-			compositeRoutes.remove(followWall);
-			compositeRoutes.add(healthStrategy);
+			System.out.print("2. ");
+			compositeRoutes.remove(safeSearch);
+			compositeRoutes.add(bruteSearch);
 		}
 		else {
-			compositeRoutes.remove(healthStrategy);
-			compositeRoutes.add(followWall);
+			System.out.print("1. ");
+			compositeRoutes.remove(bruteSearch);
+			compositeRoutes.add(safeSearch);
 		}
 		if(compositeRoutes.run(delta)) {
 			check++;
