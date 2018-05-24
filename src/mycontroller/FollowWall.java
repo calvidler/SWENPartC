@@ -24,7 +24,12 @@ public class FollowWall implements Route {
 	private int counter = 0;
 	private boolean offStart = false;
 	private int count =0;
+	private int countWait = 100; //generally not next to lava
 	private boolean hasRounded = false;
+	
+	private Coordinate currentKeyCoordinate = null;
+	private GetKey gk;
+	private boolean foundKey = true;
 	
 	
 
@@ -38,10 +43,10 @@ public class FollowWall implements Route {
 	private Car car;
 	boolean reverse = false;
 	
-	public FollowWall(Turn turn, Car car, CheckTiles checkWall){
+	public FollowWall(Turn turn, Car car, CheckTiles checkTiles){
 		this.turn = turn;
 		this.car = car;
-		this.checkTiles = checkWall;
+		this.checkTiles = checkTiles;
 		
 	}
 	
@@ -56,13 +61,31 @@ public class FollowWall implements Route {
 			notFollowingWall(currentView,delta);
 		}
 		// Once the car is already stuck to a wall, apply the following logic
+		else if(!foundKey && checkStraight()) {
+			String[] splitCoordinate = currentKeyCoordinate.toString().split(",");
+			int toX = Integer.parseInt(splitCoordinate[0]);
+			int toY = Integer.parseInt(splitCoordinate[1]);
+			String startCoordinate = car.getPosition(); 
+			splitCoordinate = startCoordinate.split(",");
+			int startX = Integer.parseInt(splitCoordinate[0]);
+			int startY = Integer.parseInt(splitCoordinate[1]);
+			if((car.getOrientation() == WorldSpatial.Direction.NORTH || car.getOrientation() == WorldSpatial.Direction.SOUTH) && startX != toX) return true;
+			if((car.getOrientation() == WorldSpatial.Direction.EAST || car.getOrientation() == WorldSpatial.Direction.WEST) && startY != toY) return true;
+			
+			foundKey = gk.getKey(delta, currentView);
+			if(foundKey) {
+				count = 0;
+				start = null;
+				counter =0;
+				offStart = false;
+				
+			}
+		}
 		else{
 			if(checkRounded() || hasRounded) {
 				hasRounded = true;
 				count++;
-				System.out.println(count);
-				if(count > 45  && checkTiles.checkFollowingWall(car.getOrientation(),currentView,MapTile.Type.WALL,false) && !isTurningRight ) {
-					System.out.println("count = " + count + " ");
+				if(count > countWait  && checkTiles.checkFollowingWall(car.getOrientation(),currentView,MapTile.Type.WALL,false) && checkStraight() && !reverse) {
 					hasRounded = false;
 					count = 0;
 					start = null;
@@ -70,6 +93,9 @@ public class FollowWall implements Route {
 					offStart = false;
 					return true;
 				}
+			}
+			if(reverse && count > 3*countWait) { //dont get stuck in reverse
+				reverse = false;
 			}
 			// Readjust the car if it is misaligned.
 			turn.readjust(lastTurnDirection,delta, isTurningLeft,isTurningRight);
@@ -79,7 +105,7 @@ public class FollowWall implements Route {
 					turn.applyRightTurn(delta);
 				}
 			}
-			else if(isTurningLeft){ 
+			else if(isTurningLeft){
 				// Apply the left turn if you are not currently near a wall.
 				if(!checkTiles.checkFollowingWall(car.getOrientation(),currentView,MapTile.Type.WALL,false)){
 					if(!checkTiles.checkSide(currentView, MapTile.Type.TRAP, car.getOrientation(), "left",false)){ //not turning into traps
@@ -100,7 +126,7 @@ public class FollowWall implements Route {
 				// If there is wall ahead, turn right!
 				if(checkTiles.checkWallAhead(car.getOrientation(),currentView,MapTile.Type.WALL,false) ){
 					lastTurnDirection = WorldSpatial.RelativeDirection.RIGHT;
-					isTurningRight = true;				
+					isTurningRight = true;		
 					
 				}
 
@@ -119,25 +145,20 @@ public class FollowWall implements Route {
 				}
 				
 			}
-			if(reverse && !checkTiles.checkFollowingWall(car.getOrientation(),currentView,MapTile.Type.WALL,false) ) { // reversing if come to a deadend
+			if(reverse && !checkTiles.checkFollowingWall(car.getOrientation(),currentView,MapTile.Type.WALL,false) ) { // reversing if and no wall to left
 				if(car.getSpeed() < CAR_SPEED){
 					car.applyForwardAcceleration();
 				}
 				car.turnLeft(delta);
 			}
-			String key = checkTiles.checkDiagonal(currentView, car.getOrientation()); //checking to key in any diagonal
-			if(key != null) {
-				System.out.println("found! ");
-				switch(key) {
-					case "left":
-						System.out.println("key");
-						car.brake();
-						car.turnLeft(delta);
-					case "right":
-						car.brake();
-						car.turnRight(delta);
-				}
+			
+			Coordinate key = checkTiles.checkDiagonal(currentView, car.getOrientation()); //checking to key in any diagonal
+			if(key!=null) {
+				currentKeyCoordinate= key;
+				gk = new GetKey(turn, car, checkTiles, currentKeyCoordinate);
+				foundKey = false;
 			}
+				
 		}
 		return false;
 	}
@@ -211,6 +232,21 @@ public class FollowWall implements Route {
 		}
 		
 		return false;
+	}
+	
+	private boolean checkStraight() {
+		switch(Math.round(car.getAngle())) {
+		case 0:
+			return true;
+		case 90:
+			return true;
+		case 180:
+			return true;
+		case 270:
+			return true;
+		default:
+			return false;
+		}
 	}
 	
 	

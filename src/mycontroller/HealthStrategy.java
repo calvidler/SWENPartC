@@ -59,11 +59,10 @@ public class HealthStrategy implements Route {
 		// Once the car is already stuck to a wall, apply the following logic
 		else{
 			System.out.print("lasd d " + lastTurnDirection + "carO" + car.getOrientation() + " ");
-			if(!checkCurrentTileLava(currentView) && lavaCrossed == true) {
+			if(!checkCurrentTileLava(currentView) && lavaCrossed == true && !checkCurrentTileFinish(currentView)) {
 				count++;
 				if(count > 12) {
 					lastTurnDirection = null;
-					isFollowingWall = false;
 					lavaCrossed = false;
 					System.out.println("left " + lastTurnDirection + " ");
 					count =0;
@@ -135,6 +134,15 @@ public class HealthStrategy implements Route {
 		MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y));
 		if(tile instanceof LavaTrap) {
 			lavaCrossed = true;
+			return true;
+		}
+		return false;
+			
+	}
+	private boolean checkCurrentTileFinish(HashMap<Coordinate,MapTile> currentView) { //for easy map
+		Coordinate currentPosition = new Coordinate(car.getPosition());
+		MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y));
+		if(tile.getType() == MapTile.Type.FINISH) {
 			return true;
 		}
 		return false;
