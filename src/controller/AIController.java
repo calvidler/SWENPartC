@@ -2,7 +2,6 @@ package controller;
 
 import java.util.HashMap;
 
-import tiles.HealthTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
@@ -42,13 +41,11 @@ public class AIController extends CarController {
 
 		// If you are not following a wall initially, find a wall to stick to!
 		if(!isFollowingWall){
-			System.out.print("No WAll:  ");
 			if(getSpeed() < CAR_SPEED){
 				applyForwardAcceleration();
 			}
 			// Turn towards the north
 			if(!getOrientation().equals(WorldSpatial.Direction.NORTH)){
-				System.out.print("Nort ");
 				lastTurnDirection = WorldSpatial.RelativeDirection.LEFT;
 				applyLeftTurn(getOrientation(),delta);
 			}
@@ -65,7 +62,6 @@ public class AIController extends CarController {
 		}
 		// Once the car is already stuck to a wall, apply the following logic
 		else{
-			System.out.print("Orientation = " + getOrientation() + " ");
 			
 			// Readjust the car if it is misaligned.
 			readjust(lastTurnDirection,delta);
@@ -74,7 +70,6 @@ public class AIController extends CarController {
 				applyRightTurn(getOrientation(),delta);
 			}
 			else if(isTurningLeft){
-				System.out.print("left ");
 				// Apply the left turn if you are not currently near a wall.
 				if(!checkFollowingWall(getOrientation(),currentView)){
 					applyLeftTurn(getOrientation(),delta);
@@ -86,7 +81,6 @@ public class AIController extends CarController {
 			// Try to determine whether or not the car is next to a wall.
 			else if(checkFollowingWall(getOrientation(),currentView)){
 				// Maintain some velocity
-				
 				if(getSpeed() < CAR_SPEED){
 					applyForwardAcceleration();
 				}
@@ -108,8 +102,6 @@ public class AIController extends CarController {
 		
 
 	}
-	
-	
 	
 	/**
 	 * Readjust the car to the orientation we are in.
@@ -133,6 +125,7 @@ public class AIController extends CarController {
 	 * misaligned.
 	 */
 	private void adjustLeft(WorldSpatial.Direction orientation, float delta) {
+		
 		switch(orientation){
 		case EAST:
 			if(getAngle() > WorldSpatial.EAST_DEGREE_MIN+EAST_THRESHOLD){

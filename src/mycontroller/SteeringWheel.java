@@ -3,7 +3,7 @@ import world.Car;
 
 import world.WorldSpatial;
 
-public class Turn {
+public class SteeringWheel {
 	private boolean isTurningLeft;
 	private boolean isTurningRight; 
 	private Car car;
@@ -11,7 +11,7 @@ public class Turn {
 	private int EAST_THRESHOLD = 3;
 	
 	
-	public Turn(boolean isTurningLeft, boolean isTurningRight, Car car) {
+	public SteeringWheel(boolean isTurningLeft, boolean isTurningRight, Car car) {
 		this.isTurningRight = isTurningRight;
 		this.isTurningLeft = isTurningLeft;
 		this.car = car;

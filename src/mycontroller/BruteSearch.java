@@ -39,14 +39,14 @@ public class BruteSearch implements Route {
 	private final float CAR_SPEED = 3;
 	
 	
-	private Turn turn;
-	private CheckTiles checkTiles;
+	private SteeringWheel turn;
+	private TileDetector checkTiles;
 	private Car car;
 	boolean reverse = false;
 	
 	
 	
-	public BruteSearch(Turn turn, Car car, CheckTiles checkWall) {
+	public BruteSearch(SteeringWheel turn, Car car, TileDetector checkWall) {
 		this.turn = turn;
 		this.car = car;
 		this.checkTiles = checkWall;

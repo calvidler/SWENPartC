@@ -38,12 +38,12 @@ public class SafeSearch implements Route {
 	private final float CAR_SPEED = 3;
 	
 	
-	private Turn turn;
-	private CheckTiles checkTiles;
+	private SteeringWheel turn;
+	private TileDetector checkTiles;
 	private Car car;
 	boolean reverse = false;
 	
-	public SafeSearch(Turn turn, Car car, CheckTiles checkTiles){
+	public SafeSearch(SteeringWheel turn, Car car, TileDetector checkTiles){
 		this.turn = turn;
 		this.car = car;
 		this.checkTiles = checkTiles;

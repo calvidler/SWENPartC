@@ -9,7 +9,7 @@ import utilities.Coordinate;
 import world.Car;
 import world.WorldSpatial;
 
-public class CheckTiles {
+public class TileDetector {
 	
 	private Car car;
 	// How many minimum units the wall is away from the player.
@@ -17,7 +17,7 @@ public class CheckTiles {
 	private int lavaSensitivity;
 	private int key;
 	
-	public CheckTiles(Car car) {
+	public TileDetector(Car car) {
 		this.car = car;
 		//this.lavaSensitivity = car.VIEW_SQUARE;
 		lavaSensitivity = 3;

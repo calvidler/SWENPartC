@@ -10,8 +10,8 @@ import world.WorldSpatial;
 
 public class GetKey {
 	
-	private Turn turn;
-	private CheckTiles checkTiles;
+	private SteeringWheel turn;
+	private TileDetector checkTiles;
 	private Car car;
 	private int toX;
 	private int toY;
@@ -28,7 +28,7 @@ public class GetKey {
 	
 	boolean start;
 	
-	public GetKey(Turn turn, Car car, CheckTiles checkWall, Coordinate key){
+	public GetKey(SteeringWheel turn, Car car, TileDetector checkWall, Coordinate key){
 		this.turn = turn;
 		this.car = car;
 		this.checkTiles = checkWall;
