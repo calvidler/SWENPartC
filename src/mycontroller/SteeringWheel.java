@@ -124,5 +124,24 @@ public class SteeringWheel {
 		car.turnRight(delta);
 		
 	}
+	/**
+	 * Check if the car is facing one of east/west.
+	 *
+	 * @return true, if successful
+	 */
+	public boolean checkStraight() {
+		switch(Math.round(car.getAngle())) {
+		case 0:
+			return true;
+		case 90:
+			return true;
+		case 180:
+			return true;
+		case 270:
+			return true;
+		default:
+			return false;
+		}
+	}
 
 }

@@ -22,6 +22,22 @@ public class TileDetector {
 		//this.lavaSensitivity = car.VIEW_SQUARE;
 		lavaSensitivity = 3;
 	}
+	
+	/**
+	 * Check if the current tile is a  health trap.
+	 *
+	 * @param currentView the current view
+	 * @return true, if successful
+	 */
+	public boolean checkCurrentTileHealth(HashMap<Coordinate,MapTile> currentView) {
+		Coordinate currentPosition = new Coordinate(car.getPosition());
+		MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y));
+		if(tile instanceof HealthTrap) {
+			return true;
+		}
+		return false;
+			
+	}
 
 	/**
 	 * Check if you have a wall in front of you!

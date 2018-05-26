@@ -8,27 +8,59 @@ import utilities.Coordinate;
 import world.Car;
 import world.WorldSpatial;
 
-public class GetKey {
+// 
+/**
+ * The Class GetKey supports the functionality of BruteSearch.
+ */
+public class KeyPicker {
 	
+	/** The turn. */
 	private SteeringWheel turn;
+	
+	/** The check tiles. */
 	private TileDetector checkTiles;
+	
+	/** The car. */
 	private Car car;
+	
+	/** The to X. */
 	private int toX;
+	
+	/** The to Y. */
 	private int toY;
+	
+	/** The start X. */
 	private int startX;
+	
+	/** The start Y. */
 	private int startY;
 	
+	/** The found. */
 	private boolean found = false;
 	
+	/** The last turn direction. */
 	private WorldSpatial.RelativeDirection lastTurnDirection = null; // Shows the last turn direction the car takes.
+	
+	/** The is turning left. */
 	private boolean isTurningLeft = false;
+	
+	/** The is turning right. */
 	private boolean isTurningRight = false; 
 	
 	
 	
+	/** The start. */
 	boolean start;
 	
-	public GetKey(SteeringWheel turn, Car car, TileDetector checkWall, Coordinate key){
+	/**
+	 * Instantiates new key picker.
+	 *
+	 * @param turn the turn
+	 * @param car the car
+	 * @param checkWall the check wall
+	 * @param key the key
+	 */
+	public KeyPicker(SteeringWheel turn, Car car, TileDetector checkWall, Coordinate key){
 		this.turn = turn;
 		this.car = car;
 		this.checkTiles = checkWall;
@@ -44,6 +76,13 @@ public class GetKey {
 		
 	}
 	
+	/**
+	 * Gets the key.
+	 *
+	 * @param delta the delta
+	 * @param currentView the current view
+	 * @return the key
+	 */
 	public boolean getKey(float delta, HashMap<Coordinate,MapTile> currentView) {
 		String[] splitCoordinate = car.getPosition().split(",");
 		int currentX = Integer.parseInt(splitCoordinate[0]);
@@ -52,17 +91,17 @@ public class GetKey {
 		// Readjust the car if it is misaligned.
 		turn.readjust(lastTurnDirection,delta, isTurningLeft,isTurningRight);
 		
-		if(checkCurrentTileHealth(currentView) && car.getHealth() < 100 && car.getSpeed() < 0.5) {
+		if(checkTiles.checkCurrentTileHealth(currentView) && car.getHealth() < 100 && car.getSpeed() < 0.5) {
 			car.brake();
 		}
-		if(isTurningLeft && !checkStraight()) {
+		if(isTurningLeft && !turn.checkStraight()) {
 			car.turnLeft(delta);
 		}
-		else if(isTurningLeft && checkStraight()) isTurningLeft =false;
-		else if(isTurningRight && !checkStraight()) {
+		else if(isTurningLeft && turn.checkStraight()) isTurningLeft =false;
+		else if(isTurningRight && !turn.checkStraight()) {
 			car.turnRight(delta);
 		}
-		else if(isTurningRight && checkStraight()) isTurningRight =false;
+		else if(isTurningRight && turn.checkStraight()) isTurningRight =false;
 		else if(toX < currentX) {
 			System.out.print("3. ");
 			switch(orientation) {
@@ -166,32 +205,6 @@ public class GetKey {
 		
 		
 		return false;
-	}
-	
-	
-	private boolean checkCurrentTileHealth(HashMap<Coordinate,MapTile> currentView) {
-		Coordinate currentPosition = new Coordinate(car.getPosition());
-		MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y));
-		if(tile instanceof HealthTrap) {
-			return true;
-		}
-		return false;
-			
-	}
-	
-	private boolean checkStraight() {
-		switch(Math.round(car.getAngle())) {
-		case 0:
-			return true;
-		case 90:
-			return true;
-		case 180:
-			return true;
-		case 270:
-			return true;
-		default:
-			return false;
-		}
 	}
 
 }

@@ -12,7 +12,7 @@ public class MyAIController extends CarController{
 	private boolean isTurningRight = false; 
 	private SteeringWheel turn;
 	private TileDetector checkTile;
-	private CompositeRoutes compositeRoutes;
+	private CompositeRoute compositeRoutes;
 
 	
 	private int check = 1;
@@ -26,7 +26,7 @@ public class MyAIController extends CarController{
 		this.turn = new SteeringWheel(isTurningLeft, isTurningRight, car);
 		this.checkTile = new TileDetector(car);
 		this.car = car;
-		this.compositeRoutes = CompositeRoutes.getInstance( car,  checkTile,  turn);
+		this.compositeRoutes = CompositeRoute.getInstance( car,  checkTile,  turn);
 		
 	}
 

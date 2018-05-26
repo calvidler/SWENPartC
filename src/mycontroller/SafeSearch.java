@@ -9,40 +9,80 @@ import utilities.Coordinate;
 import world.Car;
 import world.WorldSpatial;
 
+/**
+ * The Class SafeSearch.
+ */
 public class SafeSearch implements Route {
 	
 	
 
+	/** The last turn direction. */
 	private WorldSpatial.RelativeDirection lastTurnDirection = null; // Shows the last turn direction the car takes.
+	
+	/** The is turning left. */
 	private boolean isTurningLeft = false;
+	
+	/** The is turning right. */
 	private boolean isTurningRight = false; 
 	
+	/** The previous state. */
 	private WorldSpatial.Direction previousState = null; // Keeps track of the previous state
 	
 	
+	/** The start. */
 	private Coordinate start =null;
+	
+	/** The counter. */
 	private int counter = 0;
+	
+	/** The off start. */
 	private boolean offStart = false;
+	
+	/** The count. */
 	private int count =0;
+	
+	/** The count wait. */
 	private int countWait = 100; //generally not next to lava
+	
+	/** The has rounded. */
 	private boolean hasRounded = false;
 	
+	/** The current key coordinate. */
 	private Coordinate currentKeyCoordinate = null;
-	private GetKey gk;
+	
+	/** The gk. */
+	private KeyPicker gk;
+	
+	/** The found key. */
 	private boolean foundKey = true;
 	
 	
 
 	
+	/** The car speed. */
 	// Car Speed to move at
 	private final float CAR_SPEED = 3;
 	
 	
+	/** The turn. */
 	private SteeringWheel turn;
+	
+	/** The check tiles. */
 	private TileDetector checkTiles;
+	
+	/** The car. */
 	private Car car;
+	
+	/** The reverse. */
 	boolean reverse = false;
 	
+	/**
+	 * Instantiates a new safe search.
+	 *
+	 * @param turn the turn
+	 * @param car the car
+	 * @param checkTiles the check tiles
+	 */
 	public SafeSearch(SteeringWheel turn, Car car, TileDetector checkTiles){
 		this.turn = turn;
 		this.car = car;
@@ -50,6 +90,9 @@ public class SafeSearch implements Route {
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mycontroller.Route#run(float)
+	 */
 	public boolean run(float delta) {
 		// Gets what the car can see
 		HashMap<Coordinate, MapTile> currentView = car.getView();
@@ -157,7 +200,7 @@ public class SafeSearch implements Route {
 			Coordinate key = checkTiles.checkDiagonal(currentView, car.getOrientation()); //checking to key in any diagonal
 			if(key!=null) {
 				currentKeyCoordinate= key;
-				gk = new GetKey(turn, car, checkTiles, currentKeyCoordinate);
+				gk = new KeyPicker(turn, car, checkTiles, currentKeyCoordinate);
 				foundKey = false;
 			}
 				
@@ -168,6 +211,8 @@ public class SafeSearch implements Route {
 	/**
 	 * Checks whether the car's state has changed or not, stops turning if it
 	 *  already has.
+	 *
+	 * @param car the car
 	 */
 	private void checkStateChange(Car car) { //keep in controller
 		if(previousState == null){
@@ -187,6 +232,11 @@ public class SafeSearch implements Route {
 	}
 	
 	
+	/**
+	 * Check rounded.
+	 *
+	 * @return true, if successful
+	 */
 	private boolean checkRounded() {
 		counter++;
 		Coordinate currentC = new Coordinate(car.getPosition());
@@ -200,6 +250,13 @@ public class SafeSearch implements Route {
 		return false;
 	}
 	
+	/**
+	 * Check round coordinate.
+	 *
+	 * @param c1 the c 1
+	 * @param c2 the c 2
+	 * @return true, if successful
+	 */
 	private boolean checkRoundCoordinate(Coordinate c1, Coordinate c2) {
 		String[] splitCoordinate = c1.toString().split(",");
 		int x = Integer.parseInt(splitCoordinate[0]);
@@ -216,6 +273,11 @@ public class SafeSearch implements Route {
 		return false;
 	}
 	
+	/**
+	 * Check straight.
+	 *
+	 * @return true, if successful
+	 */
 	private boolean checkStraight() {
 		switch(Math.round(car.getAngle())) {
 		case 0:
