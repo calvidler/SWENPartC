@@ -1,29 +1,34 @@
 package mycontroller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import world.Car;
 
 
-public class CompositeRoute {
+public class CompositeRoute implements Route{
+	 private boolean isTurningLeft = false;
+		private boolean isTurningRight = false; 
+		private SteeringWheel turn;
+		private TileDetector checkTile;
 	//Collection of routes
     public Route currentRoute ;
-
+   
 	private SafeSearch safeSearch;
 	private BruteSearch bruteSearch;
 	 private static CompositeRoute instance; //only instance of this class
 
 	 //private constructor
-	private CompositeRoute(Car car, TileDetector checkTile, SteeringWheel turn) {
+	private CompositeRoute(Car car) {
+		this.turn = new SteeringWheel(isTurningLeft, isTurningRight, car);
+		this.checkTile = new TileDetector(car);
+		
 		this.safeSearch = new SafeSearch(turn, car, checkTile); // does not adapt well if used with others
 		this.bruteSearch = new BruteSearch(turn, car, checkTile);
 
+
 	}
 	//implements singleton
-	public static CompositeRoute getInstance(Car car, TileDetector checkTile, SteeringWheel turn) {
+	public static CompositeRoute getInstance(Car car) {
 		if ( instance == null ) {
-			instance = new CompositeRoute(car, checkTile, turn);
+			instance = new CompositeRoute(car);
 
 		}
         return instance;

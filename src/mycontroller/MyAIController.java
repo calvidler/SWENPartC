@@ -8,10 +8,7 @@ import world.Car;
 public class MyAIController extends CarController{
 		
 
-	private boolean isTurningLeft = false;
-	private boolean isTurningRight = false; 
-	private SteeringWheel turn;
-	private TileDetector checkTile;
+	
 	private CompositeRoute compositeRoutes;
 
 	
@@ -23,10 +20,9 @@ public class MyAIController extends CarController{
 		
 	public MyAIController(Car car) {
 		super(car);
-		this.turn = new SteeringWheel(isTurningLeft, isTurningRight, car);
-		this.checkTile = new TileDetector(car);
+		
 		this.car = car;
-		this.compositeRoutes = CompositeRoute.getInstance( car,  checkTile,  turn);
+		this.compositeRoutes = CompositeRoute.getInstance( car);
 		
 	}
 
